@@ -46,6 +46,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.lang.UnsupportedOperationException;
+
 
 import javax.annotation.Nullable;
 
@@ -301,6 +303,18 @@ public class BackgroundGeolocationModule extends ReactContextBaseJavaModule impl
     }
 
     @ReactMethod
+    public void getLocationMode(Callback success, Callback error) {
+        log.debug("Get location mode");
+        try {
+            String locationMode = getLocationMode(getContext());
+            success.invoke(locationMode);
+        } catch (UnsupportedOperationException | SettingNotFoundException e) {
+            log.error("Get location mode failed: {}", e.getMessage());
+            error.invoke("Get location mode error occured");
+        }
+    }
+
+    @ReactMethod
     public void showAppSettings() {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -535,6 +549,29 @@ public class BackgroundGeolocationModule extends ReactContextBaseJavaModule impl
         } else {
             locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
             return !TextUtils.isEmpty(locationProviders);
+        }
+    }
+
+    public static String getLocationMode(Context context) throws SettingNotFoundException {
+        int locationMode = 0;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+            switch (locationMode) {
+                case Settings.Secure.LOCATION_MODE_OFF:
+                    return "off";
+                case Settings.Secure.LOCATION_MODE_SENSORS_ONLY:
+                    return "sensors_only";
+                case Settings.Secure.LOCATION_MODE_HIGH_ACCURACY:
+                    return "high_accuracy";
+                case Settings.Secure.LOCATION_MODE_BATTERY_SAVING:
+                    return "battery_saving";
+                default:
+                    throw new UnsupportedOperationException("Not implemented yet");
+            }
+        } else {
+            throw new UnsupportedOperationException("Not implemented yet or version < KitKat");
         }
     }
 }

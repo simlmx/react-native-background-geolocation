@@ -49,6 +49,12 @@ var BackgroundGeolocation = {
     RNBackgroundGeolocation.isLocationEnabled(successFn, errorFn);
   },
 
+  getLocationMode: function(successFn, errorFn) {
+    successFn = successFn || emptyFn;
+    errorFn = errorFn || emptyFn;
+    RNBackgroundGeolocation.getLocationMode(successFn, errorFn);
+  },
+
   showAppSettings: function() {
     RNBackgroundGeolocation.showAppSettings();
   },

@@ -14,3 +14,8 @@ local.properties
 *.iml
 build
 *.skip
+
+# vim
+*~
+*.swp
+*.swo
