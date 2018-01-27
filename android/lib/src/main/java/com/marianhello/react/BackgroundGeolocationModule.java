@@ -319,7 +319,7 @@ public class BackgroundGeolocationModule extends ReactContextBaseJavaModule impl
     public void getLocationMode(Callback success, Callback error) {
         log.debug("Get location mode");
         try {
-            String locationMode = getLocationMode(getContext());
+            String locationMode = getLocationMode(getReactApplicationContext());
             success.invoke(locationMode);
         } catch (UnsupportedOperationException | SettingNotFoundException e) {
             log.error("Get location mode failed: {}", e.getMessage());
